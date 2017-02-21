@@ -4,7 +4,9 @@ class App extends Component {
   render() {
     return (
       <div>
+        {this.props.children}
         Hello React!
+
       </div>
     );
   }

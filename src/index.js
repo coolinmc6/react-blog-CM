@@ -4,18 +4,19 @@ import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import ReduxPromise from 'redux-promise';
-
-import App from './components/App';
 import reducers from './reducers'
+
+import { Router, browserHistory } from 'react-router';
+import routes from './routes';
+
 import './index.css';
-// import 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css';
 
 const createStoreWithMiddleware = applyMiddleware(ReduxPromise)(createStore);
 
 
 ReactDOM.render(
 	<Provider store={createStoreWithMiddleware(reducers)}>
-		<App />
+		<Router history={browserHistory} routes={routes} />
 	</Provider>,
   document.getElementById('root')
 );
