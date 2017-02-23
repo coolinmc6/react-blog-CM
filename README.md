@@ -252,9 +252,100 @@ So wherever that is in App is where it will populate.
   </Link>
   ```
 
+## Adding Redux Form (L84)
+- How it works:
+  - we need to tell ReduxForm that it will be in charge of our PostsNew form
+  - ReduxForm wants to have its own set of rules for each field
+  - ReduxForm is ALSO in charge of submitting as well
+  - ReduxForm is then going to pass back some properties
 
+```sh
+npm install --save redux-form@4.1.3
+```
+- Hook it up to our rootReducer in `./reducers/index.js`:
+```js
+import { reducer as formReducer } from 'redux-form';
 
+// add to rootReducer with key 'form'; the property/key MUST be 'form'
+const rootReducer = combineReducers({
+  posts: PostsReducer,
+  form: formReducer // NEW
+});
 
+export default rootReducer;
+```
+- Then we need to add it to our component that has the form:
+  - import it: `import { reduxForm } from 'redux-form';`
+  - we then connect it to the component like we do for the `{ connect } ` function in Redux
+  '''js
+  export default reduxForm({
+    form: 'PostsNewForm',
+    fields: ['title', 'categories', 'content']
+  })(PostsNew);
+  ```
+    - it looks bigger and more involved but that first argument in the parens is an object for
+    ReduxForm.  This is what is happening:
+      - Our first key is the unique name of the form this component is dealing with.  It must be
+      unique and it must be attached to the 'form' property
+      - The second key is 'fields' and it contains an array of the fields that we'll need for our
+      our form.
+    - here is a state-based look at what is really happening:
+    ```js
+    state === {
+      form: {
+        PostsNewForm: {
+          title: '...',
+          categories: '...',
+          content:'...'
+        }
+      }
+    }
+    ```
+      - so in state, there is a form key which has a unique key for the particular form that we 
+      are working on (as our app could have MULTIPLE forms).  That key, or form name, then has an
+      object with the fields that we want
+- In the same way that `{ connect }` allows us to access those items in our props, so does the
+reduxForm helper.  One of them being handleSubmit which we'll use in our render() method and see
+a little ES6 syntax:
+```js
+// ES6 syntax
+const { handleSubmit } = this.props;
+
+// ES5 syntax
+const handleSubmit = this.props.handleSubmit
+```
+- After setting our handleSubmit action, we need to map our inputs to the various fields we've
+defined.  After it's all finished, the benefits of ES6 are much more obvious:
+```js
+// ES6 => 1 line
+const { fields: { title, categories, content }, handleSubmit } = this.props;
+
+// ES5 => 4 lines
+const handleSubmit = this.props.handleSubmit
+const title = this.props.fields.title
+const categories = this.props.fields.categories
+const content = this.props.fields.content
+```
+  - NOTE: see how we are getting title, categories and content?  Each of those is a property of
+  fields which, because of our helper, is now available to us in props.
+- we need to pass the configuration object for each of title, categories and content into our 
+associated objects.
+  - to see our configuration object, take a look at console.log.
+- We want to destructures the object and puts all of those properties onto the element itself and
+we do that using special syntax: `{...title}`
+- We need to somehow merge connect into ReduxForm...
+```js
+export default reduxForm({
+  form: 'PostsNewForm',
+  fields: ['title', 'categories', 'content']
+}, null, { createPost })(PostsNew);
+```
+  - connect: 1st: mapStatetoProps, 2nd: mapDispatchToProps
+  - reduxForm: 1st: form config, 2nd: mapStatetoProps, 3rd: mapDispatchToProps
+- I am getting a warning when I make my post request.  It works but I am getting a big red warning
+from React.  It'd be a good exercise to convert my form to a ReduxForm v6...take a look 
+[here](http://redux-form.com/6.0.0-rc.3/docs/MigrationGuide.md/)
+- finish 87, start 88
 
 
 

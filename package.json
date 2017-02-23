@@ -13,6 +13,7 @@
     "react-redux": "^5.0.2",
     "react-router": "^2.8.1",
     "redux": "^3.6.0",
+    "redux-form": "^4.2.2",
     "redux-promise": "^0.5.3"
   },
   "scripts": {
