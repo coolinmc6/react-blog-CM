@@ -345,7 +345,76 @@ export default reduxForm({
 - I am getting a warning when I make my post request.  It works but I am getting a big red warning
 from React.  It'd be a good exercise to convert my form to a ReduxForm v6...take a look 
 [here](http://redux-form.com/6.0.0-rc.3/docs/MigrationGuide.md/)
-- finish 87, start 88
+
+## Form Validation
+- wrote validate function and added it as an argument in our `export default ReduxForm` object
+- It sounds like the validate function and the 'touched' functionality comes with ReduxForm
+- The code below is a clever way of giving a div a class based on some conditions.  Here, we 
+are using string interpolation to add another class if my title field has been touched AND is
+invalid (right now, that means blank).  If so, it gets the 'has-danger' class.
+
+```js
+<div className={`form-group ${title.touched && title.invalid ? 'has-danger' : ''}`}>
+```
+- React Router has a built in method called push that allows us to navigate around
+- We need to get access to the helper method 'push' from React Router
+- We are getting it from the context property of React Router
+- it's similar to props BUT it doesn't need to be explicitly passed into a child component
+- Do not abuse context in the application, you should generally try to avoid using it
+- To get access to context, we must define a context types property:
+
+```js
+static contextTypes = {
+  router: PropTypes.object
+}
+```
+- we are designing an object on the PostsNew class.  React interprets this object whenever an instance of Post-new is created
+- react is going to see that we want a particular property on our context called router
+- React is then going to search all of this component's parents until it finds a component that has
+a piece of context called router
+- It then goes all the way up to the parent Router (inside our index.js) file which gives us the
+context for us
+- we essentially are trying to get this.context.router inside our component; it's like props but a
+little different
+
+- We built our PostsShow component and now we need to build the action and reducer to fetch a
+single post
+- In our action creator, we did the normal steps:
+  - define our action type at the top: `export const FETCH_POST = 'FETCH_POST';`
+  - create our action creator:
+  ```js
+  export function fetchPost(id) {
+    const request = axios.get(`${ROOT_URL}/posts/${id}${API_KEY}`);
+
+    return {
+      type: FETCH_POST,
+      payload: request
+    }
+  }
+  ```
+- in our PostsReducer:
+  - we added a case for `FETCH_POST` and then returned the proper state object
+    - remember, we are NOT altering state but we kind of are.  We are NOT altering the particular
+    state object that we've received, yes, but we DO want to change the 'post' property.  That's
+    why we use the (spread?) operator inside the curly braces to say that we want everything that
+    is currently in state but for the 'post' property, replace what we currently have with the
+    info we got back from our GET request
+- finished L93
+- As a quick run through, we have an index page that shows ALL of our blog posts.  We can click on
+'ADD POST' to add a new blog post, after which if the creation is successful, we are directed
+back to our index page.  We created `PostsShow` component to actually show users the post that 
+they've written.  In PostsShow, we needed an action that would fetch the post that we want.  We
+do that using the post's id that we get from the back end.  That id is part of what we receive
+from the index page's `FETCH_POSTS` call so when we created the `<Link>` element, its path was
+just the `/posts/:id`.  In PostsShow, we use that id to determine which post we want.  We pass
+our action creator that id through the `this.props.params` object which is what we get for free
+(no setup required).  So using that, we have succesfully called our action creator with the
+id for our blog post and have received our information from the GET request.  Lecture 94 will
+have us actually display it now...
+
+
+
+
 
 
 
