@@ -416,6 +416,18 @@ have us actually display it now...
   - define DELETE_POST at the top of our `./actions/index.js` file
   - create the action creator which should just be an `axios.delete()`
   
+- Adding navigation AFTER completing the delete action is simple.  I just need to bring in the context
+and then I can add the promise
+```js
+// add this inside my PostsShow class
+static contextTypes = {
+    router: PropTypes.object
+}
+
+// add the promise:
+this.props.deletePost(this.props.params.id)
+  .then(() => { this.context.router.push('/') });
+```
 
 
 
