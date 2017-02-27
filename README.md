@@ -412,7 +412,10 @@ our action creator that id through the `this.props.params` object which is what 
 id for our blog post and have received our information from the GET request.  Lecture 94 will
 have us actually display it now...
 
-
+- We are about to create our DELETE_POST action.  This is what we have to do:
+  - define DELETE_POST at the top of our `./actions/index.js` file
+  - create the action creator which should just be an `axios.delete()`
+  
 
 
 
